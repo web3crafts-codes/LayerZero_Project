@@ -8,8 +8,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
 
 export const metadata: Metadata = {
-  title: "Meme Coin Marketplace",
-  description: "The Next Viral Meme Coin Gateway",
+  title: "LayerZero Token Presale",
+  description: "The official gateway for the LayerZero Token ecosystem, presale, and airdrops.",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
