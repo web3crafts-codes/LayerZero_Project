@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Smart Contract compilation artifacts (Hardhat/Foundry)
+artifacts/
+cache/
+typechain/
+typechain-types/
+out/
+broadcast/

@@ -10,6 +10,10 @@ const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space
 export const metadata: Metadata = {
   title: "Meme Coin Marketplace",
   description: "The Next Viral Meme Coin Gateway",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 import Navbar from "@/components/Navbar";

@@ -1,21 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import ThreeSceneWrapper from './ThreeSceneWrapper';
+import Image from 'next/image';
+import { useTokenData } from '../hooks/useTokenData';
 
 export default function Hero() {
-    const [soldCount, setSoldCount] = useState(12500000);
+    const { totalSupply, totalBurnt, isLoading, name, symbol } = useTokenData();
+    const ticker = symbol !== '...' ? `$${symbol}` : '$...';
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setSoldCount(prev => prev + Math.floor(Math.random() * 5000));
-        }, 3000);
-        return () => clearInterval(interval);
-    }, []);
     return (
         <section className="relative h-screen w-full overflow-hidden bg-black flex items-center">
+            {/* Animated background glow */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div
+                    className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(245,166,35,0.18) 0%, rgba(212,136,6,0.08) 50%, transparent 80%)',
+                        filter: 'blur(40px)',
+                        animation: 'pulse-glow 4s ease-in-out infinite',
+                    }}
+                />
+            </div>
+
             {/* Live Ticker */}
             <div className="absolute top-24 w-full bg-[#F5A623]/20 border-b border-[#F5A623]/30 backdrop-blur-md z-40 py-2 overflow-hidden flex whitespace-nowrap">
                 <motion.div
@@ -23,15 +30,14 @@ export default function Hero() {
                     transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
                     className="flex gap-12 text-[#F5A623] font-mono text-sm uppercase tracking-widest"
                 >
-                    <span>🚀 $ODIN Live Price: $0.000420 (+5.4%)</span>
-                    <span>🔥 Total Burnt: 420,690,000</span>
-                    <span>💎 Holders: 12,504</span>
-                    <span>🚀 $ODIN Live Price: $0.000420 (+5.4%)</span>
-                    <span>🔥 Total Burnt: 420,690,000</span>
-                    <span>💎 Holders: 12,504</span>
+                    <span>🚀 {ticker} Live Price: $0.000420 (+5.4%)</span>
+                    <span>🔥 Total Burnt: {isLoading ? '...' : totalBurnt}</span>
+                    <span>💎 Total Supply: {isLoading ? '...' : totalSupply}</span>
+                    <span>🚀 {ticker} Live Price: $0.000420 (+5.4%)</span>
+                    <span>🔥 Total Burnt: {isLoading ? '...' : totalBurnt}</span>
+                    <span>💎 Total Supply: {isLoading ? '...' : totalSupply}</span>
                 </motion.div>
             </div>
-
 
             <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10 h-full pt-40">
 
@@ -48,14 +54,13 @@ export default function Hero() {
                     </div>
 
                     <h1 className="text-6xl md:text-8xl font-black text-white mb-6 leading-tight">
-                        $ODIN <br />
+                        {ticker} <br />
                         <span className="text-[#F5A623]">IS HERE</span>
                     </h1>
 
                     <p className="text-xl text-gray-400 mb-8 max-w-lg leading-relaxed border-l-4 border-[#F5A623] pl-6">
-                        ODIN is the world's first God memecoin. It is built on Bitcoin mechanics but lives on BSC. Created as a memorial for the Norse God Odin. 100% Community Owned.
+                        {name} is the world&apos;s first God memecoin. It is built on Bitcoin mechanics but lives on BSC. Created as a memorial for the Norse God Odin. 100% Community Owned.
                     </p>
-
 
                     <div className="flex flex-wrap gap-6">
                         <button
@@ -68,17 +73,69 @@ export default function Hero() {
                     </div>
                 </motion.div>
 
-                {/* Right Column: 3D Scene */}
+                {/* Right Column: 3D Coin Image */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1 }}
-                    className="h-[600px] w-full relative overflow-visible"
+                    className="flex items-center justify-center h-[600px] w-full relative"
+                    style={{ perspective: '1000px' }}
                 >
-                    {/* Glowing Effect representing the Coin */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#F5A623] rounded-full blur-[150px] opacity-20 pointer-events-none" />
+                    {/* Outer glow rings */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div
+                            className="w-[420px] h-[420px] rounded-full border border-[#F5A623]/10"
+                            style={{ animation: 'spin-slow 20s linear infinite' }}
+                        />
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div
+                            className="w-[380px] h-[380px] rounded-full border border-[#F5A623]/20"
+                            style={{ animation: 'spin-slow 15s linear infinite reverse' }}
+                        />
+                    </div>
 
-                    <ThreeSceneWrapper />
+                    {/* Glow behind coin */}
+                    <div
+                        className="absolute w-[350px] h-[350px] rounded-full pointer-events-none"
+                        style={{
+                            background: 'radial-gradient(circle, rgba(245,166,35,0.35) 0%, rgba(212,136,6,0.15) 50%, transparent 75%)',
+                            filter: 'blur(30px)',
+                            animation: 'pulse-glow 3s ease-in-out infinite',
+                        }}
+                    />
+
+                    {/* The floating image (3D spinning removed to keep text readable) */}
+                    <div
+                        style={{
+                            animation: 'float-image 4s ease-in-out infinite',
+                            filter: 'drop-shadow(0 0 40px rgba(245,166,35,0.7)) drop-shadow(0 20px 60px rgba(245,166,35,0.4))',
+                        }}
+                    >
+                        <Image
+                            src="/herosection.png"
+                            alt="LayerZero Airdrop"
+                            width={500}
+                            height={380}
+                            priority
+                            style={{
+                                objectFit: 'contain',
+                            }}
+                        />
+                    </div>
+
+                    {/* Light reflection streak */}
+                    <div
+                        className="absolute w-[140px] h-[20px] rounded-full pointer-events-none"
+                        style={{
+                            background: 'rgba(255,255,255,0.18)',
+                            filter: 'blur(8px)',
+                            top: '30%',
+                            left: '50%',
+                            transform: 'translateX(-60%) rotate(-30deg)',
+                            animation: 'shimmer 4s ease-in-out infinite',
+                        }}
+                    />
                 </motion.div>
             </div>
 
@@ -88,6 +145,30 @@ export default function Hero() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
             </div>
+
+            {/* CSS Keyframes */}
+            <style>{`
+                @keyframes float-image {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-20px); }
+                }
+                @keyframes coin-rotate-y {
+                    0% { transform: rotateY(0deg); }
+                    100% { transform: rotateY(360deg); }
+                }
+                @keyframes pulse-glow {
+                    0%, 100% { opacity: 0.7; transform: scale(1); }
+                    50% { opacity: 1; transform: scale(1.08); }
+                }
+                @keyframes spin-slow {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                @keyframes shimmer {
+                    0%, 100% { opacity: 0.3; transform: translateX(-60%) rotate(-30deg) scaleX(1); }
+                    50% { opacity: 0.7; transform: translateX(-50%) rotate(-30deg) scaleX(1.3); }
+                }
+            `}</style>
         </section>
     );
 }

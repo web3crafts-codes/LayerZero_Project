@@ -1,19 +1,22 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTokenData } from '../hooks/useTokenData';
 
 export default function Tokenomics() {
+    const { totalSupply, circulatingSupply, totalBurnt, isLoading } = useTokenData();
+
     const stats = [
-        { label: 'Total Supply', value: '1,000,000,000', color: 'text-purple-400' },
-        { label: 'Circulating Supply', value: '650,000,000', color: 'text-blue-400' },
-        { label: 'Liquidity Locked', value: '$500,000', color: 'text-pink-400' },
-        { label: 'Holders', value: '12,500+', color: 'text-green-400' },
+        { label: 'Total Supply', value: isLoading ? '...' : totalSupply, color: 'text-[#F5A623]' },
+        { label: 'Circulating Supply', value: isLoading ? '...' : circulatingSupply, color: 'text-white' },
+        { label: 'Total Burnt', value: isLoading ? '...' : totalBurnt, color: 'text-gray-300' },
+        { label: 'Holders', value: '12,500+', color: 'text-gray-300' },
     ];
 
     return (
         <section className="py-20 bg-black/70 backdrop-blur-md border-t border-[#F5A623]/20 relative overflow-hidden">
-            {/* Background Runes */}
-            <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/odin_runic_background.png')] bg-cover bg-center" />
+            {/* Background decoration */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, rgba(245,166,35,0.15) 0%, transparent 70%)' }} />
 
             <div className="container mx-auto px-4 relative z-10">
                 <motion.div
@@ -32,7 +35,9 @@ export default function Tokenomics() {
                         Tokenomics <span className="text-[#F5A623]">Breakdown</span>
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto">
-                        Total Supply: <span className="text-[#F5A623] font-bold">21 Trillion</span>. No Team/Marketing Wallets. 100% Community Driven.
+                        Total Supply: <span className="text-[#F5A623] font-bold">
+                            {isLoading ? 'Loading...' : totalSupply}
+                        </span>. No Team/Marketing Wallets. 100% Community Driven.
                     </p>
                 </motion.div>
 
@@ -47,7 +52,7 @@ export default function Tokenomics() {
                             className="bg-zinc-900/80 border border-[#F5A623]/20 p-8 rounded-xl text-center hover:border-[#F5A623]/60 hover:bg-zinc-800 transition-all group shadow-lg"
                         >
                             <div className="text-sm text-gray-500 mb-2 uppercase tracking-wide">{stat.label}</div>
-                            <div className={`text-3xl font-bold ${stat.color === 'text-purple-400' ? 'text-[#F5A623]' : stat.color === 'text-blue-400' ? 'text-white' : 'text-gray-300'} group-hover:scale-110 transition-transform`}>
+                            <div className={`text-3xl font-bold ${stat.color} group-hover:scale-110 transition-transform`}>
                                 {stat.value}
                             </div>
                         </motion.div>
@@ -69,7 +74,9 @@ export default function Tokenomics() {
                             <circle cx="50" cy="50" r="40" stroke="#007AFF" strokeWidth="20" fill="none" strokeDasharray="251.2" strokeDashoffset="220" className="drop-shadow-lg opacity-60" />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center flex-col">
-                            <span className="text-4xl font-black text-white">21T</span>
+                            <span className="text-4xl font-black text-white">
+                                {isLoading ? '...' : totalSupply}
+                            </span>
                             <span className="text-xs text-[#F5A623] uppercase tracking-widest">Total Supply</span>
                         </div>
                     </motion.div>

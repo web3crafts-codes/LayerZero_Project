@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function Story() {
     return (
@@ -23,13 +24,13 @@ export default function Story() {
                             In the digital realm of Valhalla, ODIN watched as mere mortals traded dog coins and frog tokens. He saw the chaos, the rugs, and the fear.
                         </p>
                         <p>
-                            Strike his Gungnir spear upon the blockchain, he declared: <strong className="text-white">"Enough!"</strong>
+                            Strike his Gungnir spear upon the blockchain, he declared: <strong className="text-white">&quot;Enough!&quot;</strong>
                         </p>
                         <p>
                             $ODIN was forged not just as a meme, but as a symbol of power, trust, and community. Built on the principles of Bitcoin, but with the speed of BSC.
                         </p>
                         <p className="border-l-4 border-[#F5A623] pl-4 italic text-white">
-                            "He who holds $ODIN, holds the power of the Gods."
+                            &quot;He who holds $ODIN, holds the power of the Gods.&quot;
                         </p>
                     </div>
                 </motion.div>
@@ -42,10 +43,25 @@ export default function Story() {
                 >
                     <div className="aspect-square bg-gradient-to-br from-[#F5A623] to-purple-900 rounded-3xl p-1 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
                         <div className="w-full h-full bg-black rounded-2xl flex items-center justify-center overflow-hidden">
-                            {/* Placeholder for Meme/Mascot Image - Using text for now if image not avail */}
-                            <div className="text-center p-10">
-                                <h3 className="text-9xl">⚡</h3>
-                                <p className="text-2xl font-bold text-white mt-4">THE ALL-FATHER</p>
+                            <div className="flex flex-col items-center justify-center p-8 w-full h-full">
+                                <Image
+                                    src="/logo.png"
+                                    alt="ODIN The All-Father"
+                                    width={280}
+                                    height={280}
+                                    style={{
+                                        borderRadius: '50%',
+                                        filter: 'drop-shadow(0 0 30px rgba(245,166,35,0.8)) drop-shadow(0 0 60px rgba(245,166,35,0.4))',
+                                        animation: 'spin-slow 12s linear infinite',
+                                    }}
+                                />
+                                <p className="text-2xl font-bold text-white mt-6">THE ALL-FATHER</p>
+                                <style>{`
+                                    @keyframes spin-slow {
+                                        from { transform: rotateY(0deg); }
+                                        to { transform: rotateY(360deg); }
+                                    }
+                                `}</style>
                             </div>
                         </div>
                     </div>

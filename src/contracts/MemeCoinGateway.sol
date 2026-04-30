@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
@@ -12,12 +12,12 @@ contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
 
     IERC20 public immutable token;
 
-    uint256 public tokensPerBNB = 10000 * 1e18;
-    uint256 public claimAmount = 1000 * 1e18;
-    uint256 public claimFee = 0.01 ether;
+    uint256 public tokensPerBNB = 62500 * 1e18;
+    uint256 public claimAmount = 500 * 1e18;
+    uint256 public claimFee = 0.008 ether;
     uint256 public maxBuyPerTx = 5 ether;
 
-    address public constant TAX_WALLET = 0xE65A86675Ef8B0f08FA4AEe5a1EAa211ee7651dD;
+    address public taxWallet = 0x4BB80987086B4366a695f8AcE5b0c8Da10896a99;
 
     mapping(address => bool) public hasClaimed;
 
@@ -30,6 +30,7 @@ contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
     event ClaimAmountUpdated(uint256 newAmount);
     event MaxBuyUpdated(uint256 newLimit);
     event TaxDistributed(uint256 amount);
+    event TaxWalletUpdated(address newWallet);
 
     constructor(address _tokenAddress) Ownable(msg.sender) {
         require(_tokenAddress != address(0), "Invalid token");
@@ -37,23 +38,25 @@ contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
     }
 
     receive() external payable {
-        buyTokens();
+        buyTokens(0);
     }
 
-    function buyTokens() public payable nonReentrant whenNotPaused {
+    function buyTokens(uint256 minExpectedTokens) public payable nonReentrant whenNotPaused {
         require(msg.value > 0, "Send BNB");
         require(msg.value <= maxBuyPerTx, "Exceeds max buy");
 
-        // 10% Tax Logic
-        uint256 tax = msg.value * 10 / 100;
+        uint256 tokenAmount = (msg.value * tokensPerBNB) / 1 ether;
+        require(tokenAmount > 0, "Zero tokens expected");
+        require(tokenAmount >= minExpectedTokens, "Slippage: Too few tokens");
+        require(token.balanceOf(address(this)) >= tokenAmount, "Insufficient liquidity");
+
+        // 15% Tax Logic
+        uint256 tax = msg.value * 15 / 100;
         if (tax > 0) {
-            (bool success, ) = payable(TAX_WALLET).call{value: tax}("");
+            (bool success, ) = payable(taxWallet).call{value: tax}("");
             require(success, "Tax transfer failed");
             emit TaxDistributed(tax);
         }
-
-        uint256 tokenAmount = (msg.value * tokensPerBNB) / 1 ether;
-        require(token.balanceOf(address(this)) >= tokenAmount, "Insufficient liquidity");
 
         token.safeTransfer(msg.sender, tokenAmount);
 
@@ -63,13 +66,14 @@ contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
     function claimTokens() external payable nonReentrant whenNotPaused {
         require(msg.value >= claimFee, "Insufficient claim fee");
         require(token.balanceOf(address(this)) >= claimAmount, "Insufficient tokens");
+        require(!hasClaimed[msg.sender], "Already claimed");
 
-        // hasClaimed[msg.sender] = true; // Removed to allow multiple claims
+        hasClaimed[msg.sender] = true;
 
-        // 10% Tax Logic
-        uint256 tax = msg.value * 10 / 100;
+        // 15% Tax Logic
+        uint256 tax = msg.value * 15 / 100;
         if (tax > 0) {
-            (bool success, ) = payable(TAX_WALLET).call{value: tax}("");
+            (bool success, ) = payable(taxWallet).call{value: tax}("");
             require(success, "Tax transfer failed");
             emit TaxDistributed(tax);
         }
@@ -120,6 +124,12 @@ contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
         emit MaxBuyUpdated(newLimit);
     }
 
+    function setTaxWallet(address _newWallet) external onlyOwner {
+        require(_newWallet != address(0), "Invalid address");
+        taxWallet = _newWallet;
+        emit TaxWalletUpdated(_newWallet);
+    }
+
     function pause() external onlyOwner {
         _pause();
     }
@@ -137,6 +147,7 @@ contract MemeCoinGateway is Ownable, ReentrancyGuard, Pausable {
     }
 
     function emergencyWithdrawForeignToken(address _token, uint256 amount) external onlyOwner {
+        require(_token != address(0), "Invalid token address");
         require(_token != address(token), "Cannot withdraw main token");
         IERC20(_token).safeTransfer(owner(), amount);
     }

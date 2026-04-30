@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Shield, Lock, CheckCircle, Copy } from 'lucide-react';
 import { useState } from 'react';
 
-const CONTRACT_ADDRESS = '0x2C85d93d6a8043764525b2792CC38e7a92bD0791';
+const CONTRACT_ADDRESS = '0xC26662E318403AD17be771a51da54460A9f444Da';
 
 export default function Security() {
     const [copied, setCopied] = useState(false);
@@ -80,7 +80,7 @@ export default function Security() {
                             Safety is our <span className="text-[#F5A623]">Priority</span>
                         </h2>
                         <p className="text-gray-400 mb-8">
-                            Verify the contract yourself on BscScan. Don't trust, verify.
+                            Verify the contract yourself on BscScan. Don&apos;t trust, verify.
                         </p>
 
                         <div className="bg-black border border-white/10 rounded-xl p-6 relative overflow-hidden group">

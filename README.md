@@ -35,7 +35,11 @@ A decentralized application (dApp) for the ODIN meme coin ecosystem, built with 
 
 ---
 
-## 📜 Smart Contracts (BSC Testnet)
+## 📜 Smart Contracts & Support
+
+The smart contract code driving this project is highly specialized. **For access to the core smart contract code, custom blockchain development, or any smart contract related inquiries, please reach out directly to me.**
+
+Current deployed contracts (BSC Testnet):
 
 | Contract | Address | Description |
 | :--- | :--- | :--- |
@@ -102,8 +106,9 @@ src/
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request.
+We warmly welcome anyone who wants to contribute and improve the project! Whether you want to fix bugs, enhance the UI, or build new features, your help is greatly appreciated. 
 
+To contribute, please follow these steps:
 1.  Fork the Project
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)

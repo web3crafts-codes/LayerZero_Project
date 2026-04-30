@@ -4,10 +4,8 @@ import { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import GatewayABI from '../contracts/GatewayABI.json';
-import TokenABI from '../contracts/TokenABI.json';
 
-const CONTRACT_ADDRESS = '0xc6128c37E38b2721B7002481Ca43f80BF9eC40da';
-const TOKEN_ADDRESS = '0x2C85d93d6a8043764525b2792CC38e7a92bD0791';
+const CONTRACT_ADDRESS = '0x10641bacc05e84E122E578f1Dc94F00edf6F5e4A';
 
 export default function AdminDashboard() {
     const { address } = useAccount();
@@ -21,13 +19,13 @@ export default function AdminDashboard() {
     });
 
     // Get Contract Balances
-    const { data: bnbBalance, refetch: refetchBnb } = useReadContract({
+    const { data: bnbBalance } = useReadContract({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: GatewayABI,
         functionName: 'getBNBBalance',
     });
 
-    const { data: tokenBalance, refetch: refetchToken } = useReadContract({
+    const { data: tokenBalance } = useReadContract({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: GatewayABI,
         functionName: 'getTokenBalance',
@@ -44,37 +42,6 @@ export default function AdminDashboard() {
             abi: GatewayABI,
             functionName: 'withdrawBNB',
         });
-    };
-
-    const handleDepositTokens = () => {
-        if (!depositAmount) return;
-        // First approve tokens? Usually yes, but here we assume approval is done or handle it.
-        // Ideally we should check allowance first.
-        // For simplicity, let's just use the deposit function which calls transferFrom.
-        // So we need to approve first. 
-        // I'll skip approval UI for brevity but note it.
-
-        // Actually, let's just trigger depositTokens directly assuming approval.
-        // But real-world app needs approval step.
-        // I'll add approval logic if needed but keep it simple.
-
-        writeContract({
-            address: TOKEN_ADDRESS as `0x${string}`,
-            abi: TokenABI,
-            functionName: 'approve',
-            args: [CONTRACT_ADDRESS, parseEther(depositAmount)]
-        }, {
-            onSuccess: () => {
-                // Wait for approval then deposit? 
-                // Without chaining, user has to click twice.
-                // I'll stick to simple deposit call and let it fail if not approved.
-                // Or better, just call depositTokens and assume user approved manually or handle error.
-            }
-        });
-
-        // Detailed implementation would require two steps.
-        // Step 1: Approve
-        // Step 2: Deposit
     };
 
     const handleRealDeposit = () => {

@@ -6,12 +6,15 @@ import { parseEther, formatEther } from 'viem';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import GatewayABI from '../contracts/GatewayABI.json';
+import { useTokenData } from '../hooks/useTokenData';
+import { bsc } from 'wagmi/chains';
 
-const CONTRACT_ADDRESS = '0xc6128c37E38b2721B7002481Ca43f80BF9eC40da';
+const CONTRACT_ADDRESS = '0x10641bacc05e84E122E578f1Dc94F00edf6F5e4A';
 
 export default function BuySection() {
     const [bnbAmount, setBnbAmount] = useState('');
     const { isConnected } = useAccount();
+    const { symbol } = useTokenData();
 
     const { data: hash, writeContract, isPending } = useWriteContract();
     const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
@@ -33,18 +36,22 @@ export default function BuySection() {
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: GatewayABI,
         functionName: 'tokensPerBNB',
+        chainId: bsc.id,
+        query: { staleTime: 60_000, gcTime: 300_000 },
     });
 
-    const rate = tokensPerBNB ? Number(formatEther(tokensPerBNB as bigint)) : 10000;
+    const rate = tokensPerBNB ? Number(formatEther(tokensPerBNB as bigint)) : 62500;
     const tokensToReceive = bnbAmount ? parseFloat(bnbAmount) * rate : 0;
 
     const handleBuy = async () => {
         if (!bnbAmount) return;
         try {
+            const minExpected = tokensToReceive * 0.95;
             writeContract({
                 address: CONTRACT_ADDRESS as `0x${string}`,
                 abi: GatewayABI,
                 functionName: 'buyTokens',
+                args: [parseEther(minExpected.toString())],
                 value: parseEther(bnbAmount),
             });
         } catch (e) {
@@ -95,7 +102,7 @@ export default function BuySection() {
                             className="w-full bg-zinc-800/50 border border-zinc-700 rounded-xl py-4 px-4 text-white font-mono"
                         />
                         <span className="absolute right-4 top-1/2 transform -translate-y-1/2 font-bold text-[#F5A623]">
-                            ODIN
+                            {symbol !== '...' ? symbol : '...'}
                         </span>
                     </div>
                 </div>
@@ -125,7 +132,7 @@ export default function BuySection() {
                 </button>
 
                 <p className="text-center text-xs text-gray-500 mt-4">
-                    1 BNB = {rate.toLocaleString('en-US')} MEME
+                    1 BNB = {rate.toLocaleString('en-US')} {symbol !== '...' ? symbol : '...'}
                 </p>
             </div>
         </motion.div>

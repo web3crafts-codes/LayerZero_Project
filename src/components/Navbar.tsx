@@ -4,10 +4,13 @@ import { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+import { useTokenData } from '../hooks/useTokenData';
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { name } = useTokenData();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -20,10 +23,10 @@ export default function Navbar() {
     const links = [
         { name: 'Home', href: '#' },
         { name: 'Buy', href: '#buy-section' },
-        { name: 'Tokenomics', href: '#tokenomics' }, // Assuming ID exists or will be added
-        { name: 'Roadmap', href: '#roadmap' },       // Assuming ID exists or will be added
-        { name: 'Community', href: '#community' },   // Assuming ID exists or will be added
-        { name: 'FAQ', href: '#faq' },               // Assuming ID exists or will be added
+        { name: 'Tokenomics', href: '#tokenomics' },
+        { name: 'Roadmap', href: '#roadmap' },
+        { name: 'Community', href: '#community' },
+        { name: 'FAQ', href: '#faq' },
     ];
 
     return (
@@ -33,8 +36,18 @@ export default function Navbar() {
             <div className="container mx-auto px-4 flex justify-between items-center">
                 {/* Logo */}
                 <div className="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
-                    <span className="text-3xl">⚡</span>
-                    ODIN
+                    <Image
+                        src="/logo.png"
+                        alt="Site Logo"
+                        width={40}
+                        height={40}
+                        loading="lazy"
+                        style={{
+                            borderRadius: '50%',
+                            filter: 'drop-shadow(0 0 6px rgba(245,166,35,0.8))',
+                        }}
+                    />
+                    {name}
                 </div>
 
                 {/* Desktop Links */}

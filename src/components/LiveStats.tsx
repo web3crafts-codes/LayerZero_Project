@@ -1,14 +1,37 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Users, TrendingUp, DollarSign, Wallet } from 'lucide-react';
+import { Users, TrendingUp, Flame, Coins } from 'lucide-react';
+import { useTokenData } from '../hooks/useTokenData';
 
 export default function LiveStats() {
+    const { totalSupply, circulatingSupply, totalBurnt, isLoading } = useTokenData();
+
     const stats = [
-        { label: 'Total Sold', value: '12,504,000', icon: TrendingUp, color: 'text-[#F5A623]' },
-        { label: 'BNB Raised', value: '1,250.45', icon: DollarSign, color: 'text-green-400' },
-        { label: 'Holders', value: '4,200', icon: Users, color: 'text-blue-400' },
-        { label: 'Claims', value: '8,900', icon: Wallet, color: 'text-purple-400' },
+        {
+            label: 'Total Supply',
+            value: isLoading ? '...' : totalSupply,
+            icon: Coins,
+            color: 'text-[#F5A623]',
+        },
+        {
+            label: 'Circulating Supply',
+            value: isLoading ? '...' : circulatingSupply,
+            icon: TrendingUp,
+            color: 'text-green-400',
+        },
+        {
+            label: 'Total Burnt 🔥',
+            value: isLoading ? '...' : totalBurnt,
+            icon: Flame,
+            color: 'text-red-400',
+        },
+        {
+            label: 'Holders',
+            value: '12,500+',
+            icon: Users,
+            color: 'text-blue-400',
+        },
     ];
 
     return (
@@ -27,7 +50,7 @@ export default function LiveStats() {
                             <div className="text-2xl md:text-3xl font-black text-white font-mono">
                                 {stat.value}
                             </div>
-                            <div className="text-xs md:text-sm text-gray-500 uppercase tracking-widest">
+                            <div className="text-xs md:text-sm text-gray-500 uppercase tracking-widest text-center">
                                 {stat.label}
                             </div>
                         </motion.div>
