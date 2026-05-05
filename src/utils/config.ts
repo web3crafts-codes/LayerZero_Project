@@ -16,7 +16,7 @@ const connectors = connectorsForWallets(
     },
   ],
   {
-    appName: 'Meme Coin Marketplace',
+    appName: 'LayerZero',
     projectId,
   }
 );
