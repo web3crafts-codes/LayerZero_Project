@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import GatewayABI from '../contracts/GatewayABI.json';
-
-const CONTRACT_ADDRESS = '0x10641bacc05e84E122E578f1Dc94F00edf6F5e4A';
+const CONTRACT_ADDRESS = '0x09c89Ec2a7aB637D2da4b775A88C268761a8d202';
 
 export default function AdminDashboard() {
     const { address } = useAccount();
